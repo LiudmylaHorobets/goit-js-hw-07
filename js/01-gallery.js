@@ -29,31 +29,21 @@ function createGallery(items) {
     .join("");
 }
 
-// підключаємо модалку
 galleryContainer.addEventListener("click", onItemClick);
-
-const instance = basicLightbox.create(
-  `
-<img src="" width="900" height="auto" >`,
-  {
-    onShow: (instance) => {
-      window.addEventListener("keydown", onEscKeyPress);
-    },
-    onClose: (instance) => {
-      window.removeEventListener("keydown", onEscKeyPress);
-    },
-  }
-);
 
 function onItemClick(e) {
   e.preventDefault();
-  const datasetSource = e.target.dataset.source;
-  if (!datasetSource) return;
-  instance.element().querySelector("img").src = datasetSource;
-  instance.show();
-}
+  if (e.target.tagName === "IMG") {
+    const itemLink = e.target;
+    const instance = basicLightbox.create(`
+      <img src="${itemLink.dataset.source}" width="800" height="auto">
+    `);
 
-function onEscKeyPress(e) {
-  if (e.code !== "Escape") return;
-  instance.close();
+    instance.show();
+  }
 }
+galleryContainer.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    basicLightbox.close();
+  }
+});
